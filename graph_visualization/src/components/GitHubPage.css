@@ -1,0 +1,57 @@
+.github-page {
+    max-width: 100%;
+  }
+  
+  .github-page h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .github-page label {
+    display: block;
+    margin-top: 10px;
+  }
+  
+  .github-page input {
+    width: 500px;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+  }
+  
+  .github-page button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .github-page button:hover {
+    background-color: #0056b3;
+  }
+  /* Graph visualization container */
+.visualization-container {
+  width: 100%;
+  max-width: 1000px; /* Optional max width for large screens */
+  height: 600px; /* Increased height */
+  margin-top: 30px;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Styling GraphVisualization component */
+#graph-visualization {
+  width: 100px;
+  height: 100%;
+}
+.error {
+  color: red;
+  margin-top: 10px;
+  font-size: 0.9em;
+}

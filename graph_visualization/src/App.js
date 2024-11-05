@@ -1,23 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import Sidebar from './components/Sidebar';
+import GitHub from './components/GitHubPage';
 
 function App() {
+  const [activePage, setActivePage] = useState('github');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container">
+      <Sidebar setActivePage={setActivePage} />
+      <div className="content">
+        {activePage === 'github' && <GitHub />}
+        {activePage === 'linkedin' && <h1>LinkedIn Page - Coming Soon!</h1>}
+        {activePage === 'twitter' && <h1>Twitter Page - Coming Soon!</h1>}
+      </div>
     </div>
   );
 }
