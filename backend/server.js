@@ -5,12 +5,17 @@ dotenv.config();
 
 import cors from 'cors';
 import githubRoutes from './routes/github.routes.js';
+<<<<<<< Updated upstream
 // import linkedinRoutes from './routes/linkedin.routes.js';
+=======
+import linkedinRoutes from './routes/linkedin.routes.js';
+import graphRoutes from './routes/graph.routes.js'
+>>>>>>> Stashed changes
 
 
 const app = express();
 
-console.log(process.env);
+// console.log(process.env);
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -22,7 +27,12 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 app.use('/api/github', githubRoutes);
+<<<<<<< Updated upstream
 // app.use('/api/linkedin', linkedinRoutes);
+=======
+app.use('/api/linkedin', linkedinRoutes);
+app.use('/api/graph', graphRoutes);
+>>>>>>> Stashed changes
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
