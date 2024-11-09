@@ -5,7 +5,7 @@ import githubService from '../services/github.service.js';
 class GraphController {
     async getShortestPath(req, res) {
         try {
-            const { startUser, endUser, depth = 3 } = req.query;
+            const { startUser, endUser, depth = 4 } = req.query;
             
             // Get the graph data
             const graph = await githubService.getConnectionsGraph(startUser, depth);
@@ -30,7 +30,7 @@ class GraphController {
 
     async getSuggestions(req, res) {
         try {
-            const { username, depth = 2 } = req.query;
+            const { username, depth = 2 } = req.body;
             
             // Get the graph data
             const graph = await githubService.getConnectionsGraph(username, depth);
@@ -38,7 +38,7 @@ class GraphController {
             // Get suggestions
             const suggestions = graphService.getFollowSuggestions(graph, username);
             
-            res.json({ suggestions });
+            res.json(suggestions);
         } catch (error) {
             res.status(500).json({ error: error.message });
         }

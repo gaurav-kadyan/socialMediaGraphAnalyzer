@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import GraphVisualization from './GraphVisualization';
+import SuggestionsList from './SuggestionList'; // Fixed import
 import './GitHubPage.css';
 
 const GitHubPage = () => {
@@ -8,6 +9,7 @@ const GitHubPage = () => {
   const [graphData, setGraphData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
 
   const handleUsernameChange = (e) => setUsername(e.target.value);
   const handleDepthChange = (e) => setDepth(e.target.value);
@@ -15,11 +17,11 @@ const GitHubPage = () => {
   const handleGenerateGraph = async () => {
     setLoading(true);
     setError(null);
-    setGraphData(null); // Clear previous graph data before fetching new data
+    setGraphData(null);
+    //setSuggestions(null);
 
     try {
       const response = await fetch('http://localhost:8000/api/github/graph', {
-
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,12 +30,27 @@ const GitHubPage = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch data');
+        throw new Error('Failed to fetch graph data');
       }
 
       const data = await response.json();
-      console.log("data: ", data);
       setGraphData(prepareGraphData(data));
+
+      // Fetch suggestions
+      const responseSuggestion = await fetch('http://localhost:8000/api/graph/suggestions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, depth: parseInt(depth, 10) }),
+      });
+
+      if (!responseSuggestion.ok) {
+        throw new Error('Failed to fetch suggestions');
+      }
+
+      const suggestionData = await responseSuggestion.json();
+      setSuggestions(suggestionData); // Assuming suggestionData is already an array
     } catch (err) {
       setError(err.message);
     } finally {
@@ -44,24 +61,15 @@ const GitHubPage = () => {
   const prepareGraphData = (data) => {
     const nodes = Object.keys(data).map((id) => ({ id, label: id }));
     const edges = [];
-    const edgeSet = new Set(); // Track edges to avoid duplicates
 
     Object.entries(data).forEach(([source, targets]) => {
       if (Array.isArray(targets)) {
         targets.forEach((target) => {
-          const edgeId = `${source}-${target}`;
-          if (!edgeSet.has(edgeId)) {
-            edges.push({ from: source, to: target });
-            edgeSet.add(edgeId);
-          }
+          edges.push({ from: source, to: target });
         });
       } else if (typeof targets === 'object') {
         Object.keys(targets).forEach((nestedTarget) => {
-          const edgeId = `${source}-${nestedTarget}`;
-          if (!edgeSet.has(edgeId)) {
-            edges.push({ from: source, to: nestedTarget });
-            edgeSet.add(edgeId);
-          }
+          edges.push({ from: source, to: nestedTarget });
         });
       } else {
         console.warn(`Unexpected target type for source "${source}":`, targets);
@@ -70,7 +78,6 @@ const GitHubPage = () => {
 
     return { nodes, edges };
   };
-  
 
   return (
     <div className="github-page">
@@ -99,6 +106,9 @@ const GitHubPage = () => {
 
       {error && <p className="error">{error}</p>}
       {graphData && <GraphVisualization data={graphData} />}
+      
+      {/* Render the suggestions list below the graph */}
+      {suggestions.length > 0 && <SuggestionsList suggestions={suggestions} />}
     </div>
   );
 };

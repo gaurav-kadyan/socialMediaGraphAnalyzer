@@ -4,6 +4,6 @@ import graphController from '../controllers/graph.controller.js';
 const router = express.Router();
 
 router.get('/shortest-path', graphController.getShortestPath);
-router.get('/suggestions', graphController.getSuggestions);
+router.post('/suggestions', graphController.getSuggestions);
 
 export default router;
