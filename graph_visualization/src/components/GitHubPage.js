@@ -15,9 +15,10 @@ const GitHubPage = () => {
   const handleGenerateGraph = async () => {
     setLoading(true);
     setError(null);
+    setGraphData(null); // Clear previous graph data before fetching new data
 
     try {
-      const response = await fetch('https://your-backend-url/api/graph', {
+      const response = await fetch('http://localhost:8000/api/github/graph', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -30,6 +31,7 @@ const GitHubPage = () => {
       }
 
       const data = await response.json();
+      console.log("data: ", data);
       setGraphData(prepareGraphData(data));
     } catch (err) {
       setError(err.message);
@@ -41,11 +43,30 @@ const GitHubPage = () => {
   const prepareGraphData = (data) => {
     const nodes = Object.keys(data).map((id) => ({ id, label: id }));
     const edges = [];
+    const edgeSet = new Set(); // Track edges to avoid duplicates
+
     Object.entries(data).forEach(([source, targets]) => {
-      targets.forEach((target) => {
-        edges.push({ from: source, to: target });
-      });
+      if (Array.isArray(targets)) {
+        targets.forEach((target) => {
+          const edgeId = `${source}-${target}`;
+          if (!edgeSet.has(edgeId)) {
+            edges.push({ from: source, to: target });
+            edgeSet.add(edgeId);
+          }
+        });
+      } else if (typeof targets === 'object') {
+        Object.keys(targets).forEach((nestedTarget) => {
+          const edgeId = `${source}-${nestedTarget}`;
+          if (!edgeSet.has(edgeId)) {
+            edges.push({ from: source, to: nestedTarget });
+            edgeSet.add(edgeId);
+          }
+        });
+      } else {
+        console.warn(`Unexpected target type for source "${source}":`, targets);
+      }
     });
+
     return { nodes, edges };
   };
 

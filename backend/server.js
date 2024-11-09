@@ -5,7 +5,7 @@ dotenv.config();
 
 import cors from 'cors';
 import githubRoutes from './routes/github.routes.js';
-import linkedinRoutes from './routes/linkedin.routes.js';
+// import linkedinRoutes from './routes/linkedin.routes.js';
 
 
 const app = express();
@@ -22,7 +22,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 app.use('/api/github', githubRoutes);
-app.use('/api/linkedin', linkedinRoutes);
+// app.use('/api/linkedin', linkedinRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
