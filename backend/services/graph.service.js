@@ -55,12 +55,9 @@ class GraphService {
 
         // Sort suggestions by number of common connections
         return Array.from(suggestions.entries())
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, maxSuggestions)
-            .map(([user, commonConnections]) => ({
-                username: user,
-                commonConnections
-            }));
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, maxSuggestions)
+        .map(([user]) => user);
     }
 }
 
